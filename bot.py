@@ -13,14 +13,14 @@ browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opt
 
 
 # Create a CSV file to write the product data to
-csv_file = open('data.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
+csv_file = open('product.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
 writer = csv.writer(csv_file,delimiter='@', quotechar='"', quoting=csv.QUOTE_MINIMAL) #viết vô file csv và ngăn cách các trường bởi @
 writer.writerow(["Tiêu đề", "Giá", "Mô tả ngắn", "Mô tả chi tiết", "Ảnh"]) #viết vào file csv dòng đầu tiên tiêu đề giá ảnh
 
 
 #Tìm 5 link sản phẩm
 
-for i in range(1, 10):
+for i in range(1, 2):
     # construct URL
     url = f"https://vn.sulwhasoo.com/collections/skincare"
 
