@@ -13,7 +13,7 @@ browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opt
 
 
 # Create a CSV file to write the product data to
-csv_file = open('product.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
+csv_file = open('eyecream.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
 writer = csv.writer(csv_file,delimiter='@', quotechar='"', quoting=csv.QUOTE_MINIMAL) #viết vô file csv và ngăn cách các trường bởi @
 writer.writerow(["Tiêu đề", "Giá", "Mô tả ngắn", "Mô tả chi tiết", "Ảnh"]) #viết vào file csv dòng đầu tiên tiêu đề giá ảnh
 
@@ -22,7 +22,7 @@ writer.writerow(["Tiêu đề", "Giá", "Mô tả ngắn", "Mô tả chi tiết"
 
 for i in range(1, 2):
     # construct URL
-    url = f"https://vn.sulwhasoo.com/collections/skincare"
+    url = f"https://us.sulwhasoo.com/collections/korean-face-cream"
 
     # load page
     browser.get(url) 
@@ -31,11 +31,11 @@ for i in range(1, 2):
 
     # Tìm thẻ chứa các sản phẩm
 
-    products=browser.find_elements(by=By.CLASS_NAME,value='product-item') #lấy ra các sản phẩm
+    products=browser.find_elements(by=By.CLASS_NAME,value='product-tile') #lấy ra các sản phẩm
     #Lấy link sản phẩm
     link_products = []
     for product in products: #lọc qua từng sản phẩm
-        link=product.find_element(by=By.CSS_SELECTOR, value='.card-media').get_attribute('href') #lấy link từng sản phẩm
+        link=product.find_element(by=By.CSS_SELECTOR, value='.product-tile__link').get_attribute('href') #lấy link từng sản phẩm
         # nối link
         # print(link)
         # link_products.append(f"https://vn.sulwhasoo.com{link}")
@@ -46,22 +46,23 @@ for i in range(1, 2):
     for link in link_products:
         browser.get(link)
         
-        title=browser.find_element(by=By.CSS_SELECTOR, value='.productView-title a').text #Lấy title
-        price = browser.find_element(by=By.CSS_SELECTOR, value='dd.price__last span').text #Lấy giá
+        title = browser.find_element(by=By.CSS_SELECTOR, value='h1.product__title').text #Lấy title
+        price = browser.find_element(by=By.CSS_SELECTOR, value='.pricing__values span.price__value').text #Lấy giá
         price=price.replace(".","")
-        short_description = browser.find_element(by=By.CSS_SELECTOR, value='.productView-desc').text #Lấy short desc
-        detail_description = browser.find_element(by=By.CSS_SELECTOR, value='.tab-popup-content').text #Lấy detail
-        #
-        # # color_list=browser.find_elements(by=By.CSS_SELECTOR, value='.elc-shade-image-wrapper svg') #Lấy màu
-        # # colors = []
-        # # for color in color_list:
-        # #     name = color.get_attribute("title")
-        #
-        # #     if name:
-        # #         colors.append(name)
-        # # colors=','.join(colors)
-        #
-        images=browser.find_elements(by=By.CSS_SELECTOR, value='.productView-thumbnail-link img')#Lấy ảnh
+        short_description = browser.find_element(by=By.CSS_SELECTOR, value='.product__description').text #Lấy short desc
+        detail_description = browser.find_element(by=By.CSS_SELECTOR, value='.featured-copy__body p').text #Lấy detail
+
+        #         #
+#         # # color_list=browser.find_elements(by=By.CSS_SELECTOR, value='.elc-shade-image-wrapper svg') #Lấy màu
+#         # # colors = []
+#         # # for color in color_list:
+#         # #     name = color.get_attribute("title")
+#         #
+#         # #     if name:
+#         # #         colors.append(name)
+#         # # colors=','.join(colors)
+#         #
+        images=browser.find_elements(by=By.CSS_SELECTOR, value='.gallery__image img')#Lấy ảnh
         image_urls = []
         for image in images:
             url = image.get_attribute("src")
@@ -69,11 +70,11 @@ for i in range(1, 2):
             if url:
                 image_urls.append(url)
         image_urls=','.join(image_urls)
-        # # Write the product data to the CSV file
+#         # # Write the product data to the CSV file
         writer.writerow([title, price, short_description, detail_description, image_urls])
-
-
-# sleep(5)
-# Close the CSV file and web driver
+#
+#
+# # sleep(5)
+# # Close the CSV file and web driver
 csv_file.close()
 browser.quit()

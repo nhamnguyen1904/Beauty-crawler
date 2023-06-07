@@ -1,47 +1,27 @@
-from bs4 import BeautifulSoup
-import urllib
-from urllib import request
-import urllib.request as ur
-
-# Getting input for webiste from user
-url_input = input("https://www.shiseido.com.vn/vi/axe_suncare/")
-print(" This is the website link that you entered", url_input)
+from selenium import webdriver
 
 
-# For extracting specific tags from webpage
-def getTags(tag):
-  s = ur.urlopen(url_input)
-  soup = BeautifulSoup(s.read())
-  return soup.findAll(tag)
+def get_product_images(url):
+    # Khởi tạo trình điều khiển Selenium
+    driver = webdriver.Chrome()  # hoặc webdriver.Firefox() nếu bạn sử dụng Firefox
 
-# For extracting all h1-h6 heading tags from webpage
-def headingTags(headingtags):
-  h = ur.urlopen(url_input)
-  soup = BeautifulSoup(h.read())
-  print("List of headings from headingtags function h1, h2, h3, h4, h5, h6 :")
-  for heading in soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"]):
-    print(heading.name + ' ' + heading.text.strip())
+    # Mở trang sản phẩm
+    driver.get(url)
 
-# For extracting specific title & meta description from webpage
-def titleandmetaTags():
-    s = ur.urlopen('https://www.shiseido.com.vn/vi/axe_suncare/')
-    soup = BeautifulSoup(s.read())
-    #----- Extracting Title from website ------#
-    title = soup.title.string
-    print ('Website Title is :', title)
-    #-----  Extracting Meta description from website ------#
-    meta_description = soup.find_all('meta')
-    for tag in meta_description:
-        if 'name' in tag.attrs.keys() and tag.attrs['name'].strip().lower() in ['description', 'keywords']:
-            #print ('NAME    :',tag.attrs['name'].lower())
-            print ('CONTENT :',tag.attrs['content'])
+    # Tìm tất cả các thẻ hình ảnh trên trang
+    image_elements = driver.find_elements_by_tag_name('img')
+
+    # Lấy URL hình ảnh từ thuộc tính src của từng thẻ hình ảnh
+    image_urls = [img.get_attribute('src') for img in image_elements]
+
+    # Đóng trình điều khiển Selenium
+    driver.quit()
+
+    return image_urls
 
 
+product_url = f"https://us.sulwhasoo.com/collections/new-korean-skin-care/products/timetreasure-invigorating-cream-set-2"
+images = get_product_images(product_url)
 
-#------------- Main ---------------#
-if __name__ == '__main__':
-  titleandmetaTags()
-  tags = getTags('p')
-  headtags = headingTags('h1')
-  for tag in tags:
-     print(" Here are the tags from getTags function:", tag.contents)
+for image_url in images:
+    print(image_url)
