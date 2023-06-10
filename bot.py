@@ -13,7 +13,7 @@ browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opt
 
 
 # Create a CSV file to write the product data to
-csv_file = open('eyecream.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
+csv_file = open('mac_new.csv', 'w', newline='', encoding='utf-8')#tạo file product.csv để import sản phẩm
 writer = csv.writer(csv_file,delimiter='@', quotechar='"', quoting=csv.QUOTE_MINIMAL) #viết vô file csv và ngăn cách các trường bởi @
 writer.writerow(["Tiêu đề", "Giá", "Mô tả ngắn", "Mô tả chi tiết", "Ảnh"]) #viết vào file csv dòng đầu tiên tiêu đề giá ảnh
 
@@ -22,7 +22,7 @@ writer.writerow(["Tiêu đề", "Giá", "Mô tả ngắn", "Mô tả chi tiết"
 
 for i in range(1, 2):
     # construct URL
-    url = f"https://us.sulwhasoo.com/collections/korean-face-cream"
+    url = f"https://www.maccosmetics.com/collections"
 
     # load page
     browser.get(url) 
@@ -31,11 +31,11 @@ for i in range(1, 2):
 
     # Tìm thẻ chứa các sản phẩm
 
-    products=browser.find_elements(by=By.CLASS_NAME,value='product-tile') #lấy ra các sản phẩm
+    products=browser.find_elements(by=By.CLASS_NAME, value='swiper-slide') #lấy ra các sản phẩm
     #Lấy link sản phẩm
     link_products = []
     for product in products: #lọc qua từng sản phẩm
-        link=product.find_element(by=By.CSS_SELECTOR, value='.product-tile__link').get_attribute('href') #lấy link từng sản phẩm
+        link=product.find_element(by=By.CSS_SELECTOR, value='.h-full a').get_attribute('href') #lấy link từng sản phẩm
         # nối link
         # print(link)
         # link_products.append(f"https://vn.sulwhasoo.com{link}")
@@ -46,11 +46,11 @@ for i in range(1, 2):
     for link in link_products:
         browser.get(link)
         
-        title = browser.find_element(by=By.CSS_SELECTOR, value='h1.product__title').text #Lấy title
-        price = browser.find_element(by=By.CSS_SELECTOR, value='.pricing__values span.price__value').text #Lấy giá
+        title = browser.find_element(by=By.CSS_SELECTOR, value='h1.product-full__name').text #Lấy title
+        price = browser.find_element(by=By.CSS_SELECTOR, value='.product-price-v1').text #Lấy giá
         price=price.replace(".","")
-        short_description = browser.find_element(by=By.CSS_SELECTOR, value='.product__description').text #Lấy short desc
-        detail_description = browser.find_element(by=By.CSS_SELECTOR, value='.featured-copy__body p').text #Lấy detail
+        short_description = browser.find_element(by=By.CSS_SELECTOR, value='.product-full__short-desc').text #Lấy short desc
+        detail_description = browser.find_element(by=By.CSS_SELECTOR, value='.product-overview').text #Lấy detail
 
         #         #
 #         # # color_list=browser.find_elements(by=By.CSS_SELECTOR, value='.elc-shade-image-wrapper svg') #Lấy màu
@@ -62,7 +62,7 @@ for i in range(1, 2):
 #         # #         colors.append(name)
 #         # # colors=','.join(colors)
 #         #
-        images=browser.find_elements(by=By.CSS_SELECTOR, value='.gallery__image img')#Lấy ảnh
+        images=browser.find_elements(by=By.CSS_SELECTOR, value='.product-full__carousel-slide img')#Lấy ảnh
         image_urls = []
         for image in images:
             url = image.get_attribute("src")
